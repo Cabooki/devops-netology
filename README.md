@@ -103,10 +103,11 @@ dd01a35078f040ca984cdd349f18d0b67e486c35 **Update CHANGELOG.md**
 
 **7. Кто автор функции synchronizedWriters?**
 
-`git grep "synchronizedWriters"`
+`git log -p --all -G "synchronizedWriter"`
 
-Данный запрос не выдает результатов...
 
-Насколько понимаю, такой функции нет в репозитории?
 
-Или я что-то делаю не так?
+commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5 говорит, что автор Martin Atkins <mart@degeneration.co.uk>
+
+Но это мне подсказали...
+
