@@ -77,7 +77,7 @@
 
 11. В man bash поищите по `/\[\[`. Что делает конструкция `[[ -d /tmp ]]`
 
-****    
+**Судя по описанию, данная конструкция проверяет есть ли в корне директория tmp.**    
 
 12. Основываясь на знаниях о просмотре текущих (например, PATH) и установке новых переменных; командах, которые мы рассматривали, добейтесь в выводе type -a bash в виртуальной машине наличия первым пунктом в списке:
 
@@ -97,6 +97,24 @@ mkdir /tmp/new_path_directory
 mkdir /tmp/new_path_directory/bash
 cp /bin/bash /tmp/new_path_directory/bash
 PATH=$PATH:/tmp/new_path_directory/bash
+```
+
+* Дополнение - да, упустил строку с `/usr/local/bin/bash` в задании, но ее добавить получилось только под root-ом, так как под пользователем vagrant доступ к директории запрещен.
+
+```angular2html
+sudo -i
+cp /bin/bash /usr/local/bin/bash
+PATH=$PATH:/usr/local/bin/bash
+```
+
+**После этого вывод выглядит так**
+
+```
+vagrant@vagrant:/root$ type -a bash
+bash is /usr/local/bin/bash
+bash is /usr/bin/bash
+bash is /bin/bash
+bash is /tmp/new_path_directory/bash/bash
 ```
 
 13. Чем отличается планирование команд с помощью `batch` и `at`?
