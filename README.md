@@ -1,113 +1,110 @@
-# Домашнее задание к занятию «2.4. Инструменты Git»
+# Домашнее задание к занятию "3.1. Работа в терминале, лекция 1"
 
-**1. Найдите полный хеш и комментарий коммита, хеш которого начинается на aefea.**
+1. Установите средство виртуализации [Oracle VirtualBox](https://www.virtualbox.org/).
 
-`git show --pretty=format:"%H **%s**" aefea`
+**Установлено**
 
-aefead2207ef7e2aa5dc81a34aedf0cad4c32545 **Update CHANGELOG.md**
+2. Установите средство автоматизации [Hashicorp Vagrant](https://www.vagrantup.com/).
 
-**2. Какому тегу соответствует коммит 85024d3?**
+**Установлено**
 
-`git show  85024d3`
+3. В вашем основном окружении подготовьте удобный для дальнейшей работы терминал. Можно предложить:
 
-tag: v0.12.23
+    * iTerm2 в Mac OS X
+    * Windows Terminal в Windows
+    * выбрать цветовую схему, размер окна, шрифтов и т.д.
+    * почитать о кастомизации PS1/применить при желании.
 
-**3. Сколько родителей у коммита b8d720? Напишите их хеши.**
+   Несколько популярных проблем:
+    * Добавьте Vagrant в правила исключения перехватывающих трафик для анализа антивирусов, таких как Kaspersky, если у вас возникают связанные с SSL/TLS ошибки,
+    * MobaXterm может конфликтовать с Vagrant в Windows,
+    * Vagrant плохо работает с директориями с кириллицей (может быть вашей домашней директорией), тогда можно либо изменить [VAGRANT_HOME](https://www.vagrantup.com/docs/other/environmental-variables#vagrant_home), либо создать в системе профиль пользователя с английским именем,
+    * VirtualBox конфликтует с Windows Hyper-V и его необходимо [отключить](https://www.vagrantup.com/docs/installation#windows-virtualbox-and-hyper-v),
+    * [WSL2](https://docs.microsoft.com/ru-ru/windows/wsl/wsl2-faq#does-wsl-2-use-hyper-v-will-it-be-available-on-windows-10-home) использует Hyper-V, поэтому с ним VirtualBox также несовместим,
+    * аппаратная виртуализация (Intel VT-x, AMD-V) должна быть активна в BIOS,
+    * в Linux при установке [VirtualBox](https://www.virtualbox.org/wiki/Linux_Downloads) может дополнительно потребоваться пакет `linux-headers-generic` (debian-based) / `kernel-devel` (rhel-based).
 
-терминал только в кавычках нормально воспринимает "^", поэтому команды такие:
+**Установлен и настроен Windows Terminal**
 
-`git show "b8d720^1"`
+4. С помощью базового файла конфигурации запустите Ubuntu 20.04 в VirtualBox посредством Vagrant:
 
-56cd7859e05c36c06b56d013b55a252d0bb7e158 **Merge pull request #23857 from hashicorp/cgriggs01-stable**
+    * Создайте директорию, в которой будут храниться конфигурационные файлы Vagrant. В ней выполните `vagrant init`. Замените содержимое Vagrantfile по умолчанию следующим:
 
-`git show "b8d720^2"`
+      ```bash
+      Vagrant.configure("2") do |config|
+          config.vm.box = "bento/ubuntu-20.04"
+      end
+      ```
 
-9ea88f22fc6269854151c571162c5bcf958bee2b **add/update community provider listings**
+    * Выполнение в этой директории `vagrant up` установит провайдер VirtualBox для Vagrant, скачает необходимый образ и запустит виртуальную машину.
 
-**Итого два родителя.**
+    * `vagrant suspend` выключит виртуальную машину с сохранением ее состояния (т.е., при следующем `vagrant up` будут запущены все процессы внутри, которые работали на момент вызова suspend), `vagrant halt` выключит виртуальную машину штатным образом.
 
+**Запущена Ubuntu 20.04 в VirtualBox**
 
+5. Ознакомьтесь с графическим интерфейсом VirtualBox, посмотрите как выглядит виртуальная машина, которую создал для вас Vagrant, какие аппаратные ресурсы ей выделены. Какие ресурсы выделены по-умолчанию?
 
-**4. Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.**
+**По-умолчанию 1024Мб RAM 2, ядра процессора, жесткий диск 64Гб**
 
-`git log --pretty=format:"%H **%s**" "v0.12.23"..."v0.12.24"`
+6. Ознакомьтесь с возможностями конфигурации VirtualBox через Vagrantfile: [документация](https://www.vagrantup.com/docs/providers/virtualbox/configuration.html). Как добавить оперативной памяти или ресурсов процессора виртуальной машине?
 
-33ff1c03bb960b332be3af2e333462dde88b279e **v0.12.24**
+**Добавить в блок "Vagrant.configure("2")" код:**
+````
+   `config.vm.provider "virtualbox" do |v|`
 
-b14b74c4939dcab573326f4e3ee2a62e23e12f89 **[Website] vmc provider links**
+      `v.memory = 2048`
 
-3f235065b9347a758efadc92295b540ee0a5e26e **Update CHANGELOG.md**
+   `end`
+````
+7. Команда `vagrant ssh` из директории, в которой содержится Vagrantfile, позволит вам оказаться внутри виртуальной машины без каких-либо дополнительных настроек. Попрактикуйтесь в выполнении обсуждаемых команд в терминале Ubuntu.
 
-6ae64e247b332925b872447e9ce869657281c2bf **registry: Fix panic when server is unreachable**
+**Команда `vagrant ssh` работает.**
 
-5c619ca1baf2e21a155fcdb4c264cc9e24a2a353 **website: Remove links to the getting started guide's old location**
+8. Ознакомиться с разделами `man bash`, почитать о настройках самого bash:
+    * какой переменной можно задать длину журнала `history`, и на какой строчке manual это описывается?
+    * что делает директива `ignoreboth` в bash?
+   
+**Длина журнала задается переменной HISTSIZE, строка 2403**
 
-06275647e2b53d97d4f0a19a0fec11f6d69820b5 **Update CHANGELOG.md**
+**ignoreboth исключает из истории команды, которые начинаются с пробела и команды, которые совпадают с предудущей.**
 
-d5f9411f5108260320064349b757f55c09bc4b80 **command: Fix bug when using terraform login on Windows**
+9. В каких сценариях использования применимы скобки `{}` и на какой строчке `man bash` это описано?
 
-4b6d06cc5dcb78af637bbb19c198faff37a066ed **Update CHANGELOG.md**
+**Фигурные скобки используются для замены выражения (со строки 968) и для замены параметра (со строки 1031)**
 
-dd01a35078f040ca984cdd349f18d0b67e486c35 **Update CHANGELOG.md**
+10. Основываясь на предыдущем вопросе, как создать однократным вызовом `touch` 100000 файлов? А получилось ли создать 300000?
 
-225466bc3e5f35baa5d07197bbc079345b77525e **Cleanup after v0.12.23 release**
+`touch file{1..100000}`
+**При попытке создания 300000 файлов выходит ошибка "Argument list too long"**
 
+11. В man bash поищите по `/\[\[`. Что делает конструкция `[[ -d /tmp ]]`
 
+****    
 
+12. Основываясь на знаниях о просмотре текущих (например, PATH) и установке новых переменных; командах, которые мы рассматривали, добейтесь в выводе type -a bash в виртуальной машине наличия первым пунктом в списке:
 
-**5. Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).**
-
-Сначала найти файл
-
-`git grep "func providerSource("`
-
-*provider_source.go:func providerSource(configs []\*cliconfig.ProviderInstallation, services \*disco.Disco) (getproviders.Source, tfdiags.Diagnostics) {*
-
-Затем найти коммит с объявлением функции
-
-`git log -L :providerSource:provider_source.go`
-
-Последний в списке коммит - 8c928e83589d90a031f811fae52a81be7153e82f
-
-В нем в изменениях добавление указанной функции.
-
-Можно проверить с помощью
-
-`git show 8c928e83589d90a031f811fae52a81be7153e82f`
-
-**6. Найдите все коммиты в которых была изменена функция globalPluginDirs.**
-
-Сначала найти файл с объявлением функции
-
-`git grep "func globalPluginDirs"`
-
-Результат - plugins.go
-
-Затем найти коммиты с указанной функцией в изменениях
-
-`git log -L:globalPluginDirs:plugins.go`
-
-В результате список коммитов такой:
-
-78b12205587fe839f10d946ea3fdc06719decb05 **Remove config.go and update things using its aliases**
-
-52dbf94834cb970b510f2fba853a5b49ad9b1a46 **keep .terraform.d/plugins for discovery**
-
-41ab0aef7a0fe030e84018973a64135b11abcd70 **Add missing OS_ARCH dir to global plugin paths**
-
-66ebff90cdfaa6938f26f908c7ebad8d547fea17 **move some more plugin search path logic to command**
-
-8364383c359a6b738a436d1b7745ccdce178df47 **Push plugin discovery down into command package**
+   ```bash
+   bash is /tmp/new_path_directory/bash
+   bash is /usr/local/bin/bash
+   bash is /bin/bash
+   ```
+   (прочие строки могут отличаться содержимым и порядком)
 
 
-
-**7. Кто автор функции synchronizedWriters?**
-
-`git log -p --all -G "synchronizedWriter"`
+**Честно, решение подсмотрел в комментах.**
 
 
+```angular2html
+mkdir /tmp/new_path_directory
+mkdir /tmp/new_path_directory/bash
+cp /bin/bash /tmp/new_path_directory/bash
+PATH=$PATH:/tmp/new_path_directory/bash
+```
 
-commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5 говорит, что автор Martin Atkins <mart@degeneration.co.uk>
+13. Чем отличается планирование команд с помощью `batch` и `at`?
 
-Но это мне подсказали...
+`at` **запускает команду в указанное время,** `batch` **запускает команду через** `at` **если уровень нагрузки системы снижается ниже 0.8, либо ниже значения заданного через** `atd `
 
+14. Завершите работу виртуальной машины чтобы не расходовать ресурсы компьютера и/или батарею ноутбука.
+
+**Завершил :)**
