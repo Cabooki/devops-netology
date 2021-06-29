@@ -50,11 +50,9 @@
 
 **Добавить в блок "Vagrant.configure("2")" код:**
 ````
-   `config.vm.provider "virtualbox" do |v|`
-
-      `v.memory = 2048`
-
-   `end`
+   config.vm.provider "virtualbox" do |v|
+      v.memory = 2048
+   end
 ````
 7. Команда `vagrant ssh` из директории, в которой содержится Vagrantfile, позволит вам оказаться внутри виртуальной машины без каких-либо дополнительных настроек. Попрактикуйтесь в выполнении обсуждаемых команд в терминале Ubuntu.
 
