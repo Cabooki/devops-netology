@@ -16,8 +16,20 @@
    Используя `strace` выясните, где находится база данных `file` на основании которой она делает свои догадки.
 
 **Судя по всему `file` получает данные из `/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache`**
+****
+**Исправление**
 
+```
+stat("/home/vagrant/.magic.mgc", 0x7ffd27aba320) = -1 ENOENT (No such file or directory)
+stat("/home/vagrant/.magic", 0x7ffd27aba320) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/magic.mgc", O_RDONLY) = -1 ENOENT (No such file or directory)
+stat("/etc/magic", {st_mode=S_IFREG|0644, st_size=111, ...}) = 0
+openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3
+```
+****
 3. Предположим, приложение пишет лог в текстовый файл. Этот файл оказался удален (deleted в lsof), однако возможности сигналом сказать приложению переоткрыть файлы или просто перезапустить приложение – нет. Так как приложение продолжает писать в удаленный файл, место на диске постепенно заканчивается. Основываясь на знаниях о перенаправлении потоков предложите способ обнуления открытого удаленного файла (чтобы освободить место на файловой системе).
+
+**Изменение в последней строке.**
 
 ```angular2html
 vagrant@vagrant:~$ touch /tmp/newfile
@@ -33,13 +45,20 @@ vagrant@vagrant:~$ lsof -p 1691 | grep newfile
 python3 1691 vagrant    3r   REG  253,0        9 2240933 /tmp/newfile (deleted)
 vagrant@vagrant:~$ cat /proc/1691/fd/3
 sometext
-vagrant@vagrant:~$ cat /proc/1691/fd/3 > /tmp/newfile
+# vagrant@vagrant:~$ cat /proc/1691/fd/3 > /tmp/newfile
+> /proc/1691/fd/3
 ```
 
 4. Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
 
 **Занимают только ROM, так как это файлы.**
+****
+**Исправление**
 
+**"Вы пишете, что “занимают только ROM”. Что вы понимаете под этим? Read-Only Memory?""**
+
+**Да, имел в виду её. Но так как файлы пустые, то и эту память они не занимают.**
+****
 5. В iovisor BCC есть утилита `opensnoop`:
     ```bash
     root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
@@ -80,7 +99,15 @@ PID    COMM               FD ERR PATH
 **`uname -a` использует `execve("/usr/bin/uname", ["uname", "-a"], 0x5590af838650 /* 24 vars */) = 0"`**
 
 **Не совсем понял... `man uname` выдает всего 35 строк, где нет ничего о системном вызове.**
+****
+**Исправление**
 
+**sysinfo({uptime=3216, loads=[1344, 1696, 160], totalram=2084085760, freeram=1384054784, sharedram=700416, bufferram=47779840, totalswap=1027600384, freeswap=1027600384, procs=129, totalhigh=0, freehigh=0, mem_unit=1}) = 0**
+
+**Part of the utsname information is also accessible via
+/proc/sys/kernel/{ostype, hostname, osrelease, version,
+domainname}.**
+****
 7. Чем отличается последовательность команд через `;` и через `&&` в bash? Например:
     ```bash
     root@netology1:~# test -d /tmp/some_dir; echo Hi
