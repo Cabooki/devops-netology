@@ -22,7 +22,7 @@ Hey, Netology
 ```
 Опубликуйте созданный форк в своем репозитории и предоставьте ответ в виде ссылки на https://hub.docker.com/username_repo.
 
-**Не знаю, правильон ли я понял, но сделал, как понял. Ссылка на образ с тегом  [nginx](https://hub.docker.com/layers/190943480/cabooki/netology/nginx/images/sha256-fa382679c12e4ea215bf784d386248d7a7b3b358295ea6494f00d151bf31a45e?context=repo). Ссылка на [репозиторий](https://hub.docker.com/repository/docker/cabooki/netology).**
+**Не знаю, правильно ли я понял, но сделал, как понял. Ссылка на образ с тегом  [nginx](https://hub.docker.com/layers/190943480/cabooki/netology/nginx/images/sha256-fa382679c12e4ea215bf784d386248d7a7b3b358295ea6494f00d151bf31a45e?context=repo). Ссылка на [репозиторий](https://hub.docker.com/repository/docker/cabooki/netology).**
 
 ## Задача 2
 
@@ -77,18 +77,18 @@ Hey, Netology
 
 ```
 root@vagrant:~# docker pull centos
-root@vagrant:~# docker run -t -d --name centos-1 -v /root/info:/share/info centos
+root@vagrant:~# docker run -t -d --name centos-1 -v /root/data:/share/data centos
 root@vagrant:~# docker pull debian
-root@vagrant:~# docker run -t -d --name debian-2 -v /root/info:/info debian:latest
+root@vagrant:~# docker run -t -d --name debian-2 -v /root/data:/data debian:latest
 root@vagrant:~# docker exec -it centos-1 bash
-[root@d7c8cf2659ef /]# echo 'First text' > /share/info/first.txt
+[root@d7c8cf2659ef /]# echo 'First text' > /share/data/first.txt
 [root@d7c8cf2659ef /]# exit
 exit
-root@vagrant:~# echo 'Second text' > info/second.txt
+root@vagrant:~# echo 'Second text' > data/second.txt
 root@vagrant:~# docker exec -it debian-2 bash
-root@2fc93d475017:/# ls info
+root@2fc93d475017:/# ls data
 first.txt  second.txt
-root@2fc93d475017:/# cat info/first.txt info/second.txt
+root@2fc93d475017:/# cat data/first.txt data/second.txt
 First text
 Second text
 ```
